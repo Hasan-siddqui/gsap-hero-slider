@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Slider</title>
+    <Style>
+        @import url("https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+        }
+
+        .attri {
+            font-size: 0.5rem;
+            color: grey;
+        }
+
+        .slider {
+            font-family: "Abril Fatface", sans-serif;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider__item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: -100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        .slider__item:nth-child(1) {
+            background-image: url("https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg");
+            backdrop-filter: blur(4px);
+        }
+
+        .slider__item:nth-child(2) {
+            backdrop-filter: blur(4px);
+            background-image: url("https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg");
+        }
+
+        .slider__item:nth-child(3) {
+            backdrop-filter: blur(4px);
+            background-image:url("https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg");
+        }
+
+        .slider__text {
+            font-size: 3rem;
+            text-align: center;
+            color: #fff;
+        }
+
+        .slider__text p:first-child {
+            font-size: 6rem;
+            margin-bottom: 12px;
+        }
+
+        .slider__text p {
+            line-height: 5rem;
+        }
+
+        .slider__arrows {
+            /* background-image:url("https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"); */
+            background-repeat: no-repeat;
+            position: absolute;
+            z-index: 999;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .slider__arrows--left,
+        .slider__arrows--right {
+            border: none;
+            margin: 0;
+            text-decoration: none;
+            font-family: sans-serif;
+            text-align: center;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: transparent;
+            color: #fff;
+            text-shadow: 1px 1px #666;
+            font-size: 3.5rem;
+            padding: 0 2rem;
+            cursor: pointer;
+            transition: all 0.5s, opacity 0.5s;
+        }
+
+        .slider__arrows--left:hover {
+            opacity: 0.6;
+            transform: translateX(-5px);
+        }
+
+        .slider__arrows--right:hover {
+            opacity: 0.6;
+            transform: translateX(5px);
+        }
+
+        .slider__arrows--right:focus,
+        .slider__arrows--left:focus {
+            outline: thin dashed rgba(255, 255, 255, 0.651);
+            outline-offset: -4px;
+        }
+    </Style>
+</head>
+
+<body>
+    <div class="slider">
+        <div class="slider__item">
+            <div class="slider__text"> 
+                <p>This is slide One</p>
+                <p>And one more here with other size</p>
+            </div>
+        </div>
+
+        <div class="slider__item">
+            <div class="slider__text">
+                <p>This is slide Two</p>
+                <p>And one more here with other size</p>
+            </div>
+        </div>
+
+        <div class="slider__item">
+            <div class="slider__text">
+                <p>This is slide Three</p>
+                <p>And one more here with other size</p>
+            </div>
+        </div>
+
+        <div class="slider__arrows">
+            <button class="slider__arrows--left">&#10094;</button>
+            <button class="slider__arrows--right">&#10095;</button>
+        </div>
+    </div>
+    <script src="https://unpkg.co/gsap@3/dist/gsap.min.js"></script>
+    <script>
+        const sliderItems = document.querySelectorAll(".slider__item");
+        const btnNext = document.querySelector(".slider__arrows--right");
+        const btnBack = document.querySelector(".slider__arrows--left");
+
+        const slider = {
+            currentItem: 0,
+
+            init: () => {
+                slider.in(slider.currentItem);
+            },
+
+            in: (index) => {
+                const sliderItem = sliderItems[index];
+                const texts = sliderItem.querySelectorAll("p");
+                gsap.set(sliderItem, { scale: 0 });
+                gsap.set(sliderItem, { left: "-100vw" });
+                const timeline = gsap.timeline();
+
+                timeline
+                    .to(sliderItem, 0.5, { left: 0 })
+                    .to(sliderItem, 0.5, { scale: 1 })
+                    .from(texts, 1, {
+                        autoAlpha: 0,
+                        ease: Back.easeOut,
+                        stagger: {
+                            y: 300,
+                            each: 0.3
+                        }
+                    });
+            },
+
+            out: (index, nextIndex) => {
+                const sliderItem = sliderItems[index];
+                const texts = sliderItem.querySelectorAll("p");
+                const timeline = gsap.timeline();
+                timeline
+                    .to(sliderItem, 0.5, {
+                        left: "100vw",
+                        delay: 0.5,
+                        scale: 0.3,
+                        opacity: 0
+                    })
+                    .to(texts, 1, {
+                        autoAlpha: 0,
+                        ease: Back.easeIn,
+                        stagger: {
+                            y: -300,
+                            each: 0.3
+                        }
+                    })
+                    .call(slider.in, [nextIndex], this, "-=1.5")
+                    .set([texts, sliderItem], { clearProps: "all" });
+            },
+
+            next: () => {
+                const next =
+                    slider.currentItem !== sliderItems.length - 1
+                        ? slider.currentItem + 1
+                        : 0;
+                slider.out(slider.currentItem, next);
+                slider.currentItem = next;
+            },
+
+            back: () => {
+                const prev =
+                    slider.currentItem > 0 ? slider.currentItem - 1 : sliderItems.length - 1;
+                slider.out(slider.currentItem, prev);
+                slider.currentItem = prev;
+            }
+        };
+
+        // Events
+        btnNext.addEventListener("click", slider.next);
+        btnBack.addEventListener("click", slider.back);
+
+        slider.init();
+
+    </script>
+</body>
+
+</html>
